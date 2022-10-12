@@ -87,10 +87,18 @@ public class ResourcesConfig {
   }
 
   @Bean
+  Front50PipelineLoader front50PipelineLoader(
+      ProviderHealthTracker tracker, Front50Api front50Api) {
+    return new Front50PipelineLoader(tracker, front50Api);
+  }
+
+  @Bean
   Front50Service front50Service(
       Front50ApplicationLoader front50ApplicationLoader,
-      Front50ServiceAccountLoader front50ServiceAccountLoader) {
-    return new Front50Service(front50ApplicationLoader, front50ServiceAccountLoader);
+      Front50ServiceAccountLoader front50ServiceAccountLoader,
+      Front50PipelineLoader front50PipelineLoader) {
+    return new Front50Service(
+        front50ApplicationLoader, front50ServiceAccountLoader, front50PipelineLoader);
   }
 
   @Bean

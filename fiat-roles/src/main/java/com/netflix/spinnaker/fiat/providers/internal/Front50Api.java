@@ -17,6 +17,7 @@
 package com.netflix.spinnaker.fiat.providers.internal;
 
 import com.netflix.spinnaker.fiat.model.resources.Application;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import com.netflix.spinnaker.fiat.model.resources.ServiceAccount;
 import java.util.List;
 import retrofit.http.GET;
@@ -39,4 +40,7 @@ public interface Front50Api {
 
   @GET("/serviceAccounts")
   List<ServiceAccount> getAllServiceAccounts();
+
+  @GET("/pipelines?restricted=false")
+  List<Pipeline> getAllPipelines();
 }

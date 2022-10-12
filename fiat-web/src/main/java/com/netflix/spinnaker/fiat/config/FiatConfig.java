@@ -5,15 +5,12 @@ import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.config.PluginsAutoConfiguration;
 import com.netflix.spinnaker.fiat.model.Authorization;
 import com.netflix.spinnaker.fiat.model.resources.Application;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import com.netflix.spinnaker.fiat.model.resources.Role;
 import com.netflix.spinnaker.fiat.permissions.DefaultFallbackPermissionsResolver;
 import com.netflix.spinnaker.fiat.permissions.ExternalUser;
 import com.netflix.spinnaker.fiat.permissions.FallbackPermissionsResolver;
-import com.netflix.spinnaker.fiat.providers.DefaultApplicationResourceProvider;
-import com.netflix.spinnaker.fiat.providers.DefaultServiceAccountPredicateProvider;
-import com.netflix.spinnaker.fiat.providers.DefaultServiceAccountResourceProvider;
-import com.netflix.spinnaker.fiat.providers.ResourcePermissionProvider;
-import com.netflix.spinnaker.fiat.providers.ServiceAccountPredicateProvider;
+import com.netflix.spinnaker.fiat.providers.*;
 import com.netflix.spinnaker.fiat.providers.internal.ClouddriverService;
 import com.netflix.spinnaker.fiat.providers.internal.Front50Service;
 import com.netflix.spinnaker.fiat.roles.UserRolesProvider;
@@ -138,5 +135,16 @@ public class FiatConfig implements WebMvcConfigurer {
     scheduler.setPoolSize(poolSize);
 
     return scheduler;
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "auth.permissions.source.pipeline.prefix.enabled")
+  DefaultPipelineResourceProvider pipelineProvider(
+      Front50Service front50Service,
+      ResourcePermissionProvider<Pipeline> permissionProvider,
+      FallbackPermissionsResolver executeFallbackPermissionsResolver) {
+
+    return new DefaultPipelineResourceProvider(
+        front50Service, permissionProvider, executeFallbackPermissionsResolver);
   }
 }

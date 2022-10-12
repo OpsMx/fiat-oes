@@ -17,6 +17,7 @@
 package com.netflix.spinnaker.fiat.providers.internal;
 
 import com.netflix.spinnaker.fiat.model.resources.Application;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import com.netflix.spinnaker.fiat.model.resources.ServiceAccount;
 import java.util.List;
 
@@ -24,12 +25,15 @@ public class Front50Service {
 
   private final Front50ApplicationLoader front50ApplicationLoader;
   private final Front50ServiceAccountLoader front50ServiceAccountLoader;
+  private final Front50PipelineLoader front50PipelineLoader;
 
   public Front50Service(
       Front50ApplicationLoader front50ApplicationLoader,
-      Front50ServiceAccountLoader front50ServiceAccountLoader) {
+      Front50ServiceAccountLoader front50ServiceAccountLoader,
+      Front50PipelineLoader front50PipelineLoader) {
     this.front50ApplicationLoader = front50ApplicationLoader;
     this.front50ServiceAccountLoader = front50ServiceAccountLoader;
+    this.front50PipelineLoader = front50PipelineLoader;
   }
 
   /**
@@ -46,5 +50,9 @@ public class Front50Service {
 
   public List<ServiceAccount> getAllServiceAccounts() {
     return front50ServiceAccountLoader.getData();
+  }
+
+  public List<Pipeline> getAllPipelines() {
+    return front50PipelineLoader.getData();
   }
 }

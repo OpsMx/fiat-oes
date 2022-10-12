@@ -25,6 +25,7 @@ public class ResourceType {
 
   public static ResourceType ACCOUNT = new ResourceType("account");
   public static ResourceType APPLICATION = new ResourceType("application");
+  public static ResourceType PIPELINE = new ResourceType("pipeline");
   public static ResourceType SERVICE_ACCOUNT =
       new ResourceType("service_account"); // Fiat service account.
   public static ResourceType ROLE = new ResourceType("role");

@@ -30,4 +30,6 @@ public interface ResourceProvider<R extends Resource> {
   Set<R> getAllUnrestricted() throws ProviderException;
 
   void clearCache();
+
+  void reloadAll();
 }

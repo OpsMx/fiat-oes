@@ -3,6 +3,7 @@ package com.netflix.spinnaker.fiat.config;
 import com.netflix.spinnaker.fiat.model.resources.Account;
 import com.netflix.spinnaker.fiat.model.resources.Application;
 import com.netflix.spinnaker.fiat.model.resources.BuildService;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import com.netflix.spinnaker.fiat.providers.AggregatingResourcePermissionProvider;
 import com.netflix.spinnaker.fiat.providers.ResourcePermissionProvider;
 import com.netflix.spinnaker.fiat.providers.ResourcePermissionSource;
@@ -34,6 +35,13 @@ public class AggregateResourcePermissionConfig {
       havingValue = "aggregate")
   public ResourcePermissionProvider<BuildService> aggregateBuildServicePermissionProvider(
       List<ResourcePermissionSource<BuildService>> sources) {
+    return new AggregatingResourcePermissionProvider<>(sources);
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "auth.permissions.source.pipeline.prefix.enabled")
+  public ResourcePermissionProvider<Pipeline> aggregatePipelinePermissionProvider(
+      List<ResourcePermissionSource<Pipeline>> sources) {
     return new AggregatingResourcePermissionProvider<>(sources);
   }
 }

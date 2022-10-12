@@ -33,6 +33,8 @@ public class UserPermission {
 
   private Set<Account> accounts = new LinkedHashSet<>();
   private Set<Application> applications = new LinkedHashSet<>();
+
+  private Set<Pipeline> pipelines = new LinkedHashSet<>();
   private Set<ServiceAccount> serviceAccounts = new LinkedHashSet<>();
   private Set<Role> roles = new LinkedHashSet<>();
   private Set<BuildService> buildServices = new LinkedHashSet<>();
@@ -59,6 +61,8 @@ public class UserPermission {
       accounts.add((Account) resource);
     } else if (resource instanceof Application) {
       applications.add((Application) resource);
+    } else if (resource instanceof Pipeline) {
+      pipelines.add((Pipeline) resource);
     } else if (resource instanceof ServiceAccount) {
       serviceAccounts.add((ServiceAccount) resource);
     } else if (resource instanceof Role) {
@@ -85,6 +89,7 @@ public class UserPermission {
     Set<Resource> retVal = new HashSet<>();
     retVal.addAll(accounts);
     retVal.addAll(applications);
+    retVal.addAll(pipelines);
     retVal.addAll(serviceAccounts);
     retVal.addAll(roles);
     retVal.addAll(buildServices);
@@ -115,6 +120,7 @@ public class UserPermission {
     String name;
     Set<Account.View> accounts;
     Set<Application.View> applications;
+    Set<Pipeline.View> pipelines;
     Set<ServiceAccount.View> serviceAccounts;
     Set<Role.View> roles;
     Set<BuildService.View> buildServices;
@@ -123,6 +129,7 @@ public class UserPermission {
     boolean accountManager;
     boolean legacyFallback = false;
     boolean allowAccessToUnknownApplications = false;
+    boolean allowAccessToUnknownPipelines = false;
 
     public View(UserPermission permission) {
       this.name = permission.id;
@@ -135,6 +142,7 @@ public class UserPermission {
 
       this.accounts = (Set<Account.View>) toViews.apply(permission.getAccounts());
       this.applications = (Set<Application.View>) toViews.apply(permission.getApplications());
+      this.pipelines = (Set<Pipeline.View>) toViews.apply(permission.getPipelines());
       this.serviceAccounts =
           (Set<ServiceAccount.View>) toViews.apply(permission.getServiceAccounts());
       this.roles = (Set<Role.View>) toViews.apply(permission.getRoles());

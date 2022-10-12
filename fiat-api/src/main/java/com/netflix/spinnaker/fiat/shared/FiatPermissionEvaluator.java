@@ -455,6 +455,16 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
         return true;
       }
       return permission.isLegacyFallback() || containsAuth.apply(permission.getApplications());
+    } else if (resourceType.equals(ResourceType.PIPELINE)) {
+      boolean pipelineHasPermissions =
+          permission.getPipelines().stream()
+              .anyMatch(a -> a.getName().equalsIgnoreCase(resourceName));
+
+      if (!pipelineHasPermissions && permission.isAllowAccessToUnknownPipelines()) {
+        // allow access to any applications w/o explicit permissions
+        return true;
+      }
+      return permission.isLegacyFallback() || containsAuth.apply(permission.getPipelines());
     } else if (resourceType.equals(ResourceType.SERVICE_ACCOUNT)) {
       return permission.getServiceAccounts().stream()
           .anyMatch(view -> view.getName().equalsIgnoreCase(resourceName));

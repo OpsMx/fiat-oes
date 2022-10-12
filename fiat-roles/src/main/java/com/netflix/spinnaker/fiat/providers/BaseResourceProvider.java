@@ -95,7 +95,13 @@ public abstract class BaseResourceProvider<R extends Resource> implements Resour
   }
 
   public void clearCache() {
+
     cache.invalidate(CACHE_KEY);
+  }
+
+  public void reloadAll() {
+    Set<R> data = loadAll();
+    cache.put(CACHE_KEY, data);
   }
 
   protected abstract Set<R> loadAll() throws ProviderException;

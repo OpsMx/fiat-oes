@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.fiat.model.resources.Account;
 import com.netflix.spinnaker.fiat.model.resources.Application;
 import com.netflix.spinnaker.fiat.model.resources.BuildService;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import com.netflix.spinnaker.fiat.providers.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -102,5 +103,12 @@ class DefaultResourcePermissionConfig {
       ObjectMapper objectMapper, FiatServerConfigurationProperties configurationProperties) {
     return new ChaosMonkeyApplicationResourcePermissionSource(
         configurationProperties.getChaosMonkey().getRoles(), objectMapper);
+  }
+
+  @Bean
+  @ConditionalOnProperty("auth.permissions.source.pipeline.prefix.enabled")
+  @ConfigurationProperties("auth.permissions.source.pipeline.prefix")
+  ResourcePermissionSource<Pipeline> pipelinePrefixResourcePermissionSource() {
+    return new ResourcePrefixPermissionSource<Pipeline>();
   }
 }

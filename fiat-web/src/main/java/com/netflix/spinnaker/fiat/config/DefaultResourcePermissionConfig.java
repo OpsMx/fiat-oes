@@ -72,6 +72,25 @@ class DefaultResourcePermissionConfig {
 
   @Bean
   @ConditionalOnProperty(
+      value = "auth.permissions.source.pipeline.resource.enabled",
+      matchIfMissing = true)
+  @Order(Ordered.HIGHEST_PRECEDENCE + 100)
+  ResourcePermissionSource<Pipeline> pipelineResourcePermissionSource() {
+    return new PipelineResourcePermissionSource();
+  }
+
+  @Bean
+  @ConditionalOnProperty(
+      value = "auth.permissions.provider.pipeline",
+      havingValue = "default",
+      matchIfMissing = true)
+  public ResourcePermissionProvider<Pipeline> defaultPipelinePermissionProvider(
+      ResourcePermissionSource<Pipeline> pipelineResourcePermissionSource) {
+    return new DefaultResourcePermissionProvider<>(pipelineResourcePermissionSource);
+  }
+
+  @Bean
+  @ConditionalOnProperty(
       value = "auth.permissions.source.build-service.resource.enabled",
       matchIfMissing = true)
   @Order(Ordered.HIGHEST_PRECEDENCE + 100)
@@ -106,7 +125,10 @@ class DefaultResourcePermissionConfig {
   }
 
   @Bean
-  @ConditionalOnProperty("auth.permissions.source.pipeline.prefix.enabled")
+  @ConditionalOnProperty(
+      value = "auth.permissions.source.pipeline.prefix.enabled",
+      havingValue = "true",
+      matchIfMissing = false)
   @ConfigurationProperties("auth.permissions.source.pipeline.prefix")
   ResourcePermissionSource<Pipeline> pipelinePrefixResourcePermissionSource() {
     return new ResourcePrefixPermissionSource<Pipeline>();

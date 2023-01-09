@@ -20,19 +20,18 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 import com.netflix.spinnaker.fiat.model.Authorization;
-import com.netflix.spinnaker.fiat.model.resources.Application;
 import com.netflix.spinnaker.fiat.model.resources.Permissions;
+import com.netflix.spinnaker.fiat.model.resources.Pipeline;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 
-public final class PipelineResourcePermissionSource
-    implements ResourcePermissionSource<Application> {
+public final class PipelineResourcePermissionSource implements ResourcePermissionSource<Pipeline> {
 
   @Override
   @Nonnull
-  public Permissions getPermissions(@Nonnull Application resource) {
+  public Permissions getPermissions(@Nonnull Pipeline resource) {
     Permissions storedPermissions = resource.getPermissions();
     if (storedPermissions == null || !storedPermissions.isRestricted()) {
       return Permissions.EMPTY;

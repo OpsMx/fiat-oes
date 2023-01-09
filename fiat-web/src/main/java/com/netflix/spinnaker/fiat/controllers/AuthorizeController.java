@@ -130,6 +130,11 @@ public class AuthorizeController {
     return new HashSet<>(getUserPermissionView(userId).getApplications());
   }
 
+  @RequestMapping(value = "/{userId:.+}/pipelines", method = RequestMethod.GET)
+  public Set<Pipeline.View> getUserPipelines(@PathVariable String userId) {
+    return new HashSet<>(getUserPermissionView(userId).getPipelines());
+  }
+
   @RequestMapping(
       value = "/{userId:.+}/applications/{applicationName:.+}",
       method = RequestMethod.GET)
@@ -345,7 +350,8 @@ public class AuthorizeController {
     return getUserPermissionOrDefault(userId)
         .orElseThrow(userNotFound(userId))
         .getView()
-        .setAllowAccessToUnknownApplications(configProps.isAllowAccessToUnknownApplications());
+        .setAllowAccessToUnknownApplications(configProps.isAllowAccessToUnknownApplications())
+        .setAllowAccessToUnknownPipelines(configProps.isAllowAccessToUnknownPipelines());
   }
 
   private Supplier<NotFoundException> userNotFound(String userId) {

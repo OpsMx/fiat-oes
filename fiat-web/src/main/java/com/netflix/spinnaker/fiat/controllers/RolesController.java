@@ -22,7 +22,6 @@ import com.netflix.spinnaker.fiat.permissions.ExternalUser;
 import com.netflix.spinnaker.fiat.permissions.PermissionResolutionException;
 import com.netflix.spinnaker.fiat.permissions.PermissionsRepository;
 import com.netflix.spinnaker.fiat.permissions.PermissionsResolver;
-import com.netflix.spinnaker.fiat.providers.DefaultPipelineResourceProvider;
 import com.netflix.spinnaker.fiat.roles.UserRolesSyncer;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,8 +45,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RolesController {
 
   @Autowired @Setter PermissionsResolver permissionsResolver;
-
-  @Autowired @Setter DefaultPipelineResourceProvider defaultPipelineResourceProvider;
 
   @Autowired @Setter PermissionsRepository permissionsRepository;
 

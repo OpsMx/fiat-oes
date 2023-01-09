@@ -39,7 +39,10 @@ public class AggregateResourcePermissionConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(value = "auth.permissions.source.pipeline.prefix.enabled")
+  @ConditionalOnProperty(
+      value = "auth.permissions.source.pipeline.prefix.enabled",
+      havingValue = "true",
+      matchIfMissing = false)
   public ResourcePermissionProvider<Pipeline> aggregatePipelinePermissionProvider(
       List<ResourcePermissionSource<Pipeline>> sources) {
     return new AggregatingResourcePermissionProvider<>(sources);

@@ -41,6 +41,8 @@ public class FiatServerConfigurationProperties {
 
   private boolean allowAccessToUnknownApplications = false;
 
+  private boolean allowAccessToUnknownPipelines = false;
+
   private Authorization executeFallback = Authorization.READ;
 
   private boolean restrictApplicationCreation = false;

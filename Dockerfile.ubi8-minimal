@@ -1,0 +1,25 @@
+FROM ubuntu:bionic AS build
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jdk \
+ && rm -rf /var/lib/apt/lists/*
+LABEL maintainer="sig-platform@spinnaker.io"
+ENV GRADLE_USER_HOME /workspace/.gradle
+ENV GRADLE_OPTS -Xmx4g
+WORKDIR /build
+COPY . /build
+RUN ./gradlew --no-daemon fiat-web:installDist -x test
+
+
+FROM quay.io/opsmxpublic/image-base-java-ubi8-minimal:latest AS package
+LABEL maintainer="info@opsmx.io"
+
+ARG TARGETARCH
+
+RUN  microdnf install --setopt=tsflags=nodocs openssh-clients  && \
+  groupadd -g 10111 spinnaker && \
+  useradd -g spinnaker -u 10111 spinnaker && \
+  mkdir -p /opt/fiat/plugins && chown -R spinnaker:spinnaker /opt/fiat/plugins
+
+COPY --from=build /build/fiat-web/build/install/fiat /opt/fiat
+USER spinnaker
+CMD ["/opt/fiat/bin/fiat"]

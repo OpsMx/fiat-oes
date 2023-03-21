@@ -11,8 +11,8 @@ dependencies {
   implementation "com.squareup.retrofit:retrofit"
   implementation "com.squareup.retrofit:converter-jackson:1.9.0"
   implementation "com.squareup.okhttp:okhttp"
-  implementation "com.squareup.okhttp:okhttp-urlconnection"
-  implementation "com.squareup.okhttp:okhttp-apache"
+  implementation "com.squareup.okhttp:okhttp-urlconnection:2.7.5"
+  implementation "com.squareup.okhttp:okhttp-apache:2.7.5"
   implementation "com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0"
   implementation "com.google.guava:guava"
 
@@ -22,8 +22,8 @@ dependencies {
   implementation "io.spinnaker.kork:kork-config"
   implementation "io.spinnaker.kork:kork-plugins"
   implementation "io.spinnaker.kork:kork-web"
-  implementation "io.swagger:swagger-annotations"
-  implementation "net.logstash.logback:logstash-logback-encoder"
+  implementation "io.swagger:swagger-annotations:1.5.20"
+  implementation "net.logstash.logback:logstash-logback-encoder:7.3"
 
   runtimeOnly "io.spinnaker.kork:kork-runtime"
 
@@ -45,6 +45,14 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers"
 
   testImplementation "io.spinnaker.kork:kork-sql-test"
+}
+
+tasks.withType(Tar){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(Zip){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 applicationName = 'fiat'

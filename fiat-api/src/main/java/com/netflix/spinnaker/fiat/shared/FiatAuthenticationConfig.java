@@ -40,10 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
@@ -123,18 +120,17 @@ public class FiatAuthenticationConfig {
     return new FiatAccessDeniedExceptionHandler(exceptionMessageDecorator);
   }
 
-  private static class FiatWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  private static class FiatWebSecurityConfigurerAdapter {
     private final FiatStatus fiatStatus;
     private final AuthenticationConverter authenticationConverter;
 
     private FiatWebSecurityConfigurerAdapter(
         FiatStatus fiatStatus, AuthenticationConverter authenticationConverter) {
-      super(true);
       this.fiatStatus = fiatStatus;
       this.authenticationConverter = authenticationConverter;
     }
 
-    @Override
+    /*@Override
     protected void configure(HttpSecurity http) throws Exception {
       http.servletApi()
           .and()
@@ -145,6 +141,6 @@ public class FiatAuthenticationConfig {
           .addFilterBefore(
               new FiatAuthenticationFilter(fiatStatus, authenticationConverter),
               AnonymousAuthenticationFilter.class);
-    }
+    }*/
   }
 }

@@ -35,7 +35,7 @@ dependencies {
   implementation "io.spinnaker.kork:kork-security"
   implementation "io.spinnaker.kork:kork-telemetry"
   implementation "redis.clients:jedis:4.3.1"
-  implementation "com.google.api-client:google-api-client:1.30.10"
+  implementation "com.google.api-client:google-api-client:2.2.0"
 
   testImplementation "org.apache.commons:commons-collections4:4.1"
   testImplementation "org.testcontainers:testcontainers"

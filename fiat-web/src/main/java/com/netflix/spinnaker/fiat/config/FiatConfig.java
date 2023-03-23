@@ -35,18 +35,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Import({RetrofitConfig.class, PluginsAutoConfiguration.class})
 @EnableConfigurationProperties(FiatServerConfigurationProperties.class)
-public class FiatConfig {
+public class FiatConfig implements WebMvcConfigurer {
 
   @Autowired private Registry registry;
 
-  // @Override
+  @Override
   public void addInterceptors(InterceptorRegistry registry) {
     var pathVarsToTag = ImmutableList.of("accountName", "applicationName", "resourceName");
     List<String> exclude = ImmutableList.of("BasicErrorController");
@@ -55,11 +58,10 @@ public class FiatConfig {
     registry.addInterceptor(interceptor);
   }
 
-  /*@Override
+  @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    super.configureContentNegotiation(configurer);
     configurer.favorPathExtension(false).defaultContentType(MediaType.APPLICATION_JSON);
-  }*/
+  }
 
   @Bean
   @ConditionalOnMissingBean(UserRolesProvider.class)

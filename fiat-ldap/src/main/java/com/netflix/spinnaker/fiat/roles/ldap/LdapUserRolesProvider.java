@@ -32,6 +32,8 @@ import javax.naming.directory.Attributes;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -47,6 +49,9 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(value = "auth.group-membership.service", havingValue = "ldap")
 public class LdapUserRolesProvider implements UserRolesProvider {
 
+  // Creating the log object
+  Logger log = LoggerFactory.getLogger("LdapUserRolesProvider");
+
   @Autowired @Setter private SpringSecurityLdapTemplate ldapTemplate;
 
   @Autowired @Setter private LdapConfig.ConfigProps configProps;
@@ -55,7 +60,7 @@ public class LdapUserRolesProvider implements UserRolesProvider {
   public List<Role> loadRoles(ExternalUser user) {
     String userId = user.getId();
 
-    // log.debug("loadRoles for user " + userId);
+    log.debug("loadRoles for user " + userId);
     if (StringUtils.isEmpty(configProps.getGroupSearchBase())) {
       return new ArrayList<>();
     }
@@ -64,13 +69,13 @@ public class LdapUserRolesProvider implements UserRolesProvider {
 
     if (fullUserDn == null) {
       // Likely a service account
-      // log.debug("fullUserDn is null for {}", userId);
+      log.debug("fullUserDn is null for {}", userId);
       return new ArrayList<>();
     }
 
     String[] params = new String[] {fullUserDn, userId};
 
-    /*if (log.isDebugEnabled()) {
+    if (log.isDebugEnabled()) {
       log.debug(
           new StringBuilder("Searching for groups using ")
               .append("\ngroupSearchBase: ")
@@ -82,7 +87,7 @@ public class LdapUserRolesProvider implements UserRolesProvider {
               .append("\ngroupRoleAttributes: ")
               .append(configProps.getGroupRoleAttributes())
               .toString());
-    }*/
+    }
 
     // Copied from org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator.
     Set<String> userRoles =
@@ -92,7 +97,7 @@ public class LdapUserRolesProvider implements UserRolesProvider {
             params,
             configProps.getGroupRoleAttributes());
 
-    // log.debug("Got roles for user " + userId + ": " + userRoles);
+    log.debug("Got roles for user " + userId + ": " + userRoles);
     return userRoles.stream()
         .map(role -> new Role(role).setSource(Role.Source.LDAP))
         .collect(Collectors.toList());
@@ -152,7 +157,7 @@ public class LdapUserRolesProvider implements UserRolesProvider {
   private String getUserFullDn(String userId) {
     String rootDn = LdapUtils.parseRootDnFromUrl(configProps.getUrl());
     DistinguishedName root = new DistinguishedName(rootDn);
-    // log.debug("Root DN: " + root.toString());
+    log.debug("Root DN: " + root.toString());
 
     String[] formatArgs = new String[] {LdapEncoder.nameEncode(userId)};
 
@@ -164,7 +169,7 @@ public class LdapUserRolesProvider implements UserRolesProvider {
                 configProps.getUserSearchBase(), configProps.getUserSearchFilter(), formatArgs);
         partialUserDn = res.getDn().toString();
       } catch (IncorrectResultSizeDataAccessException e) {
-        // log.error("Unable to find a single user entry for {}", userId, e);
+        log.error("Unable to find a single user entry for {}", userId, e);
         return null;
       }
     } else {
@@ -172,14 +177,14 @@ public class LdapUserRolesProvider implements UserRolesProvider {
     }
 
     DistinguishedName user = new DistinguishedName(partialUserDn);
-    // log.debug("User portion: " + user.toString());
+    log.debug("User portion: " + user.toString());
 
     try {
       Name fullUser = root.addAll(user);
-      // log.debug("Full user DN: " + fullUser.toString());
+      log.debug("Full user DN: " + fullUser.toString());
       return fullUser.toString();
     } catch (InvalidNameException ine) {
-      // log.error("Could not assemble full userDn", ine);
+      log.error("Could not assemble full userDn", ine);
     }
     return null;
   }

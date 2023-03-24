@@ -23,6 +23,7 @@ import com.netflix.spinnaker.fiat.model.resources.ServiceAccount
 import com.netflix.spinnaker.kork.api.exceptions.ExceptionDetails
 import com.netflix.spinnaker.kork.api.exceptions.ExceptionMessage
 import com.netflix.spinnaker.kork.web.exceptions.ExceptionMessageDecorator
+import jakarta.servlet.http.HttpServletRequest
 import org.jetbrains.annotations.Nullable
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.ObjectProvider
@@ -32,8 +33,7 @@ import spock.lang.Subject
 import org.springframework.security.access.AccessDeniedException
 import spock.lang.Unroll
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 
 class FiatAccessDeniedExceptionHandlerSpec extends FiatSharedSpecification {
 

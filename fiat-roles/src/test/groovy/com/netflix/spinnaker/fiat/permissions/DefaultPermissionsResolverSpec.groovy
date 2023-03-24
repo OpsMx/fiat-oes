@@ -267,7 +267,7 @@ class DefaultPermissionsResolverSpec extends Specification {
     def extUser1 = new ExternalUser().setId("user1")
 
     when:
-    0 * userRolesProvider.multiLoadRoles()
+    0 * userRolesProvider.multiLoadRoles(Collections.emptyList())
     def result = resolver.resolve([svc1])
 
     then:
@@ -338,12 +338,19 @@ class DefaultPermissionsResolverSpec extends Specification {
             "user3": [role1, roleAdmin],
             "abc@managed-service-accounts": [role1],
     ]
-
+    final Set<String> userRoleSet1 = new HashSet()
+    userRoleSet1.add(role1)
+    final Set<String> userRoleSet2 = new HashSet()
+    userRoleSet2.add(role1)
+    userRoleSet2.add(role2)
+    final Set<String> userRoleAdmin = new HashSet()
+    userRoleAdmin.add(role1)
+    userRoleAdmin.add(roleAdmin)
     when:
-    applicationProvider.getAllRestricted("user1", HashSet.of(role1), false) >> [testApp1].toSet()
-    applicationProvider.getAllRestricted("user2", HashSet.of(role1, role2), false) >> [testApp2].toSet()
-    applicationProvider.getAllRestricted("user3", HashSet.of(role1, roleAdmin), true) >> [testAppAdmin].toSet()
-    applicationProvider.getAllRestricted("abc@managed-service-accounts", HashSet.of(role1), false) >> [testApp1].toSet()
+    applicationProvider.getAllRestricted("user1", userRoleSet1, false) >> [testApp1].toSet()
+    applicationProvider.getAllRestricted("user2", userRoleSet2, false) >> [testApp2].toSet()
+    applicationProvider.getAllRestricted("user3", userRoleAdmin, true) >> [testAppAdmin].toSet()
+    applicationProvider.getAllRestricted("abc@managed-service-accounts", userRoleSet1, false) >> [testApp1].toSet()
     def result = resolver.resolveResources(userToRoles)
 
     then:

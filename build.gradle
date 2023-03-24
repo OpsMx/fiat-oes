@@ -35,6 +35,7 @@ subprojects {
   if ([korkVersion].find { it.endsWith("-SNAPSHOT") }) {
     repositories {
       mavenLocal()
+      mavenCentral()
     }
   }
 
@@ -74,7 +75,7 @@ subprojects {
       testImplementation "org.spockframework:spock-spring"
       testImplementation "org.springframework:spring-test"
       testImplementation "org.hamcrest:hamcrest-core"
-      testRuntimeOnly "cglib:cglib-nodep"
+      testRuntimeOnly "cglib:cglib-nodep:3.3.0"
       testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
       testRuntimeOnly "org.objenesis:objenesis"
     }

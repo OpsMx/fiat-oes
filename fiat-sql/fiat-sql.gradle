@@ -38,8 +38,8 @@ dependencies {
 
     testImplementation "io.spinnaker.kork:kork-sql-test"
 
-    testImplementation "io.mockk:mockk"
-    testImplementation "dev.minutest:minutest"
+    testImplementation "dev.minutest:minutest:1.13.0"
+    testImplementation  "io.mockk:mockk:1.10.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
 
     testImplementation "mysql:mysql-connector-java"

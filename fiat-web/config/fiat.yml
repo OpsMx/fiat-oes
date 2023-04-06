@@ -12,3 +12,11 @@ okHttpClient:
 
 logging:
   config: classpath:logback-defaults.xml
+
+services:
+  front50:
+    base-url: http://localhost:7003
+  clouddriver:
+    base-url: http://localhost:7002
+  igor:
+    base-url: http://localhost:8088

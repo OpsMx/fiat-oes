@@ -18,6 +18,7 @@ package com.netflix.spinnaker.fiat.shared;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.fiat.model.Authorization;
@@ -133,7 +134,7 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
       FiatClientConfigurationProperties configProps,
       FiatStatus fiatStatus,
       RetryHandler retryHandler) {
-    this.registry = registry;
+    this.registry = new DefaultRegistry();
     this.fiatService = fiatService;
     this.fiatStatus = fiatStatus;
     this.retryHandler = retryHandler;

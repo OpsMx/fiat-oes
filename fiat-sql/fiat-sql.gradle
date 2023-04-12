@@ -32,14 +32,15 @@ dependencies {
 
     implementation "io.strikt:strikt-core"
     implementation "io.github.resilience4j:resilience4j-retry"
+    implementation 'io.vavr:vavr:1.0.0-alpha-4'
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j"
 
     testImplementation "io.spinnaker.kork:kork-sql-test"
 
-    testImplementation "io.mockk:mockk"
-    testImplementation "dev.minutest:minutest"
+    testImplementation "dev.minutest:minutest:1.13.0"
+    testImplementation  "io.mockk:mockk:1.10.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
 
     testImplementation "mysql:mysql-connector-java"

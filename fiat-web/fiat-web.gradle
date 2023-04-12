@@ -3,17 +3,17 @@ apply plugin: 'io.spinnaker.package'
 mainClassName = 'com.netflix.spinnaker.fiat.Main'
 
 configurations.all {
-  exclude group: 'javax.servlet', module: 'servlet-api'
+  //exclude group: 'javax.servlet', module: 'servlet-api'
   exclude group: "org.slf4j", module: "slf4j-log4j12"
 }
 
 dependencies {
   implementation "com.squareup.retrofit:retrofit"
-  implementation "com.squareup.retrofit:converter-jackson"
+  implementation "com.squareup.retrofit:converter-jackson:1.9.0"
   implementation "com.squareup.okhttp:okhttp"
-  implementation "com.squareup.okhttp:okhttp-urlconnection"
-  implementation "com.squareup.okhttp:okhttp-apache"
-  implementation "com.jakewharton.retrofit:retrofit1-okhttp3-client"
+  implementation "com.squareup.okhttp:okhttp-urlconnection:2.7.5"
+  implementation "com.squareup.okhttp:okhttp-apache:2.7.5"
+  implementation "com.jakewharton.retrofit:retrofit1-okhttp3-client:1.1.0"
   implementation "com.google.guava:guava"
 
   implementation "org.springframework.boot:spring-boot-properties-migrator"
@@ -22,6 +22,8 @@ dependencies {
   implementation "io.spinnaker.kork:kork-config"
   implementation "io.spinnaker.kork:kork-plugins"
   implementation "io.spinnaker.kork:kork-web"
+  implementation "io.swagger:swagger-annotations:1.5.20"
+  implementation "net.logstash.logback:logstash-logback-encoder:7.3"
   implementation "io.spinnaker.kork:kork-retrofit"
   implementation "io.swagger:swagger-annotations"
   implementation "net.logstash.logback:logstash-logback-encoder"
@@ -46,6 +48,14 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers"
 
   testImplementation "io.spinnaker.kork:kork-sql-test"
+}
+
+tasks.withType(Tar){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(Zip){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 applicationName = 'fiat'

@@ -30,9 +30,10 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -44,10 +45,12 @@ import org.springframework.security.ldap.LdapUtils;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @ConditionalOnProperty(value = "auth.group-membership.service", havingValue = "ldap")
 public class LdapUserRolesProvider implements UserRolesProvider {
+
+  // Creating the log object
+  Logger log = LoggerFactory.getLogger("LdapUserRolesProvider");
 
   @Autowired @Setter private SpringSecurityLdapTemplate ldapTemplate;
 

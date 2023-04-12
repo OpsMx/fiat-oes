@@ -1,6 +1,7 @@
 package com.netflix.spinnaker.fiat.config;
 
 import com.google.common.collect.ImmutableList;
+import com.netflix.spectator.api.DefaultRegistry;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.config.PluginsAutoConfiguration;
 import com.netflix.spinnaker.fiat.model.Authorization;
@@ -18,6 +19,7 @@ import com.netflix.spinnaker.fiat.providers.internal.ClouddriverService;
 import com.netflix.spinnaker.fiat.providers.internal.Front50Service;
 import com.netflix.spinnaker.fiat.roles.UserRolesProvider;
 import com.netflix.spinnaker.filters.AuthenticatedRequestFilter;
+import com.netflix.spinnaker.kork.discovery.DiscoveryStatusListener;
 import com.netflix.spinnaker.kork.web.interceptors.MetricsInterceptor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,27 +41,34 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Import({RetrofitConfig.class, PluginsAutoConfiguration.class})
 @EnableConfigurationProperties(FiatServerConfigurationProperties.class)
-public class FiatConfig extends WebMvcConfigurerAdapter {
+public class FiatConfig implements WebMvcConfigurer {
 
-  @Autowired private Registry registry;
+  @Bean
+  Registry getRegistry() {
+    return new DefaultRegistry();
+  }
+
+  @Bean
+  DiscoveryStatusListener getDiscoveryStatusListener() {
+    return new DiscoveryStatusListener();
+  }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     var pathVarsToTag = ImmutableList.of("accountName", "applicationName", "resourceName");
     List<String> exclude = ImmutableList.of("BasicErrorController");
     MetricsInterceptor interceptor =
-        new MetricsInterceptor(this.registry, "controller.invocations", pathVarsToTag, exclude);
+        new MetricsInterceptor(getRegistry(), "controller.invocations", pathVarsToTag, exclude);
     registry.addInterceptor(interceptor);
   }
 
   @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    super.configureContentNegotiation(configurer);
     configurer.favorPathExtension(false).defaultContentType(MediaType.APPLICATION_JSON);
   }
 

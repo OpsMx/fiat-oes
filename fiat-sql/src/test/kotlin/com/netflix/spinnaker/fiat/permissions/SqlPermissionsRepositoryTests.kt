@@ -727,9 +727,6 @@ internal object SqlPermissionsRepositoryTests : JUnit5Minutests {
             jooq.flushAll()
         }
 
-        afterAll {
-           // jooq.close()
-        }
     }
 
     fun tests() = rootContext<JooqConfig> {

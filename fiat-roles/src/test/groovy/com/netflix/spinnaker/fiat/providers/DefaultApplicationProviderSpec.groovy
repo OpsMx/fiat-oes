@@ -168,7 +168,6 @@ class DefaultApplicationProviderSpec extends Specification {
     final Map<String,String> map1 = new HashMap<>()
     map1.put("foo", "bar")
     map1.put("xyz", "pqr")
-    //final Map<String,String> map2 = HashMap.any("foo", "bar", "xyz", "pqr")
     final Map<String,String> map2 = new HashMap<>()
     map2.put("foo", "bar")
     map2.put("xyz", "pqr")

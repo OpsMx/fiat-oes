@@ -98,7 +98,7 @@ class RolesControllerSpec extends Specification {
     }
   }
 
-  /*def "should put user in the repo"() {
+  def "should put user in the repo"() {
     setup:
     front50ServiceAccountLoader.getData() >> []
     front50ApplicationLoader.getData() >> [unrestrictedApp, restrictedApp]
@@ -159,5 +159,5 @@ class RolesControllerSpec extends Specification {
 
     then:
     !permissionsRepository.get("noRolesUser@group.com").isPresent()
-  }*/
+  }
 }

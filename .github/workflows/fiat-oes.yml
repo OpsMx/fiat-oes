@@ -42,7 +42,7 @@ jobs:
       - name: Build
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
-        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test -m
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test 
 
       - name: dockerBuildpush
         uses: docker/build-push-action@v2

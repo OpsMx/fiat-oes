@@ -41,7 +41,7 @@ jobs:
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
         with:
           registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
+          username: ksrinimba
           password: ${{ secrets.QUAY_KEY }}
       - name: dockerBuildpush
         uses: docker/build-push-action@v2

@@ -13,7 +13,6 @@ env:
 
 jobs:
   branch-build:
-    if: startsWith(github.repository, ‘opsmx/‘)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -38,7 +37,6 @@ jobs:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true igor-web:installDist -x test
       - name: Login to Quay
-        if: startsWith(github.repository, ‘opsmx/‘)
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
         with:
@@ -46,8 +44,6 @@ jobs:
           username: ksrinimba
           password: ${{ secrets.GAR_JSON_KEY }}
       - name: dockerBuildpush
-        # Only run this on repositories in the 'spinnaker' org, not on forks.
-        if: startsWith(github.repository, ‘opsmx/‘)
         uses: docker/build-push-action@v2
         with:
           context: .

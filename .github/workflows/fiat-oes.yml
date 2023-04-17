@@ -32,17 +32,18 @@ jobs:
         run: |
           echo ::set-output name=REPO::ubi8-fiat-cve
           echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
-      - name: Build
-        env:
-          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
-        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test -m
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
         with:
-          registry: recovery.quay.io
-          username: ksrinimba
+          registry: quay.io
+          username: ksrinimba+customer_builds
           password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test -m
+
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:

@@ -37,7 +37,7 @@ jobs:
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
         with:
           registry: quay.io
-          username: ksrinimba+customer_builds
+          username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_KEY }}
       - name: Build
         env:

@@ -64,7 +64,7 @@ jobs:
 
               EOF
              
-              ls -d */  | grep -v  "fiat" | sed 's/\///g' > ds.txt
+              ls -d */  | grep "fiat" | sed 's/\///g' > ds.txt
               
               cat ds.txt
               
@@ -77,9 +77,5 @@ jobs:
               done
              
               sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
-              
-              cat fiat-bom/fiat-bom.gradle
-            
-              #./gradlew --no-daemon -PenableCrossCompilerPlugin=true  clean build -x test
-              
-               # ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+          
+                ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

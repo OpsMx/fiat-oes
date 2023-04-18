@@ -1,10 +1,9 @@
 name: Branch Build fiat
 
 on:
-  workflow_call:
   push:
     branches:
-    - OES-1.30.x-master-adhoc
+    - OES-1.30.x-master-adhoctest
  
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g

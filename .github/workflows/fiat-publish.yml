@@ -75,5 +75,9 @@ jobs:
               done
              
               sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
+              
+              cat fiat-bom/fiat-bom.gradle
             
+              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  clean build -x test
+              
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

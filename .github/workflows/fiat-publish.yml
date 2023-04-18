@@ -1,7 +1,6 @@
 name: Branch Build fiat publish
 
 on:
-  workflow_call:
   push:
     branches:
     - OES-1.30.x-master-adhoc

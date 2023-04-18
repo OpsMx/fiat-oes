@@ -66,6 +66,8 @@ jobs:
              
               ls -d */  | grep -v  "fiat" | sed 's/\///g' > ds.txt
               
+              cat ds.txt
+              
 
               for i in $(cat ds.txt) 
               do
@@ -78,6 +80,6 @@ jobs:
               
               cat fiat-bom/fiat-bom.gradle
             
-              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  clean build -x test
+              #./gradlew --no-daemon -PenableCrossCompilerPlugin=true  clean build -x test
               
-              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+               # ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

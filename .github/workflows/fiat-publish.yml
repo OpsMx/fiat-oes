@@ -77,5 +77,8 @@ jobs:
               done
              
               sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
+              
+                sed -e '/version\=1.37.0\-SNAPSHOT/ s/^#*/\/\//' -i gradle.properties
+
           
                 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

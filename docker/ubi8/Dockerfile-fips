@@ -35,7 +35,7 @@ RUN adduser spinnaker
 RUN mkdir -p /opt/fiat/plugins
 RUN chmod -R 777 /opt/fiat/plugins/
 RUN chown -R spinnaker:spinnaker /opt/
-RUN yum -y remove  tar   curl
+RUN yum -y remove  tar wget
 RUN yum -y remove clean all && rm -rf /var/cache
 
 USER spinnaker

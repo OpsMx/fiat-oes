@@ -18,7 +18,6 @@ plugins {
   id 'io.spinnaker.project' version "$spinnakerGradleVersion" apply false
   id "org.jetbrains.kotlin.jvm" version "$kotlinVersion" apply false
   id "org.jetbrains.kotlin.plugin.allopen" version "$kotlinVersion" apply false
-  id 'org.springframework.boot' version '3.0.0' apply true
 }
 
 allprojects {

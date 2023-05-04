@@ -43,7 +43,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,7 +55,7 @@ import retrofit.converter.JacksonConverter;
 
 @Import(ErrorConfiguration.class)
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @Configuration
 @EnableConfigurationProperties(FiatClientConfigurationProperties.class)
 @ComponentScan("com.netflix.spinnaker.fiat.shared")
@@ -145,7 +145,9 @@ public class FiatAuthenticationConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-      http.servletApi()
+      http.csrf()
+          .disable()
+          .servletApi()
           .and()
           .exceptionHandling()
           .and()

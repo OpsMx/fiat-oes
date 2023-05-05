@@ -16,6 +16,8 @@
 
 package com.netflix.spinnaker.fiat.shared;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jakewharton.retrofit.Ok3Client;

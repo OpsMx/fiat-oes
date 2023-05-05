@@ -81,7 +81,7 @@ public class AuthorizeController {
       value =
           "Used mostly for testing. Not really any real value to the rest of "
               + "the system. Disabled by default.")
-  @RequestMapping(method = RequestMethod.GET)
+  @RequestMapping(value = "/", method = RequestMethod.GET)
   public Set<UserPermission.View> getAll(HttpServletResponse response) throws IOException {
     if (!configProps.isGetAllEnabled()) {
       response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "/authorize is disabled");

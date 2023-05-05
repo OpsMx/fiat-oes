@@ -43,8 +43,8 @@ dependencies {
     testImplementation  "io.mockk:mockk:1.10.5"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
 
-    // https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
+
+    implementation "com.mysql:mysql-connector-j:8.0.33"
 
     testImplementation "org.testcontainers:mysql"
 

@@ -16,13 +16,9 @@
 
 package com.netflix.spinnaker.fiat.shared;
 
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jakewharton.retrofit.Ok3Client;
-import com.netflix.spectator.api.DefaultRegistry;
-import com.netflix.spectator.api.Registry;
 import com.netflix.spinnaker.config.DefaultServiceEndpoint;
 import com.netflix.spinnaker.config.ErrorConfiguration;
 import com.netflix.spinnaker.config.okhttp3.OkHttpClientProvider;
@@ -64,11 +60,6 @@ public class FiatAuthenticationConfig {
   @Autowired(required = false)
   @Setter
   private RestAdapter.LogLevel retrofitLogLevel = RestAdapter.LogLevel.BASIC;
-
-  @Bean
-  Registry getRegistry() {
-    return new DefaultRegistry();
-  }
 
   @Bean
   @ConditionalOnMissingBean(FiatService.class) // Allows for override

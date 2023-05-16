@@ -50,3 +50,11 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"            

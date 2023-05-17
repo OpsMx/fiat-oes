@@ -171,8 +171,11 @@ public class DefaultPermissionsResolver implements PermissionsResolver {
     userToRoles.putAll(
         serviceAccounts.stream()
             .collect(Collectors.toMap(ExternalUser::getId, ExternalUser::getExternalRoles)));
-
-    return resolveResources(userToRoles);
+    long startTime = System.currentTimeMillis();
+    Map<String, UserPermission> resolvedResources = resolveResources(userToRoles);
+    long elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000;
+    log.info("** {}s to create {} UserPermission objects", elapsedSeconds, userToRoles.size());
+    return resolvedResources;
   }
 
   private Map<String, Collection<Role>> getServiceAccountRoles() {
@@ -206,7 +209,7 @@ public class DefaultPermissionsResolver implements PermissionsResolver {
   @Override
   public Map<String, UserPermission> resolveResources(
       @NonNull Map<String, Collection<Role>> userToRoles) {
-    return userToRoles.entrySet().stream()
+    return userToRoles.entrySet().parallelStream()
         .map(
             entry -> {
               String userId = entry.getKey();

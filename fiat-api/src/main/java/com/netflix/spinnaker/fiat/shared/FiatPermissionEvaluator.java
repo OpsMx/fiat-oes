@@ -47,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -71,6 +72,9 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
   private final Id getPermissionCounterId;
 
   private final RetryHandler retryHandler;
+
+  @Value("${pipeline.rbac:false}")
+  private boolean isPipelineRbac;
 
   interface RetryHandler {
     default <T> T retry(String description, Callable<T> callable) throws Exception {
@@ -414,11 +418,18 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
       String resourceName,
       ResourceType resourceType,
       Authorization authorization) {
+    log.info(
+        "permissionContains started for: {} and resourceName is: {} and resourceType is: {} and authorization",
+        permission.getName(),
+        resourceName,
+        resourceType,
+        authorization.name());
     if (permission == null) {
       return false;
     }
 
     if (permission.isAdmin()) {
+      log.info("permissionContains isAdmin for {}", permission.getName());
       // grant access regardless of whether an explicit permission to the resource exists
       return true;
     }
@@ -465,12 +476,17 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
       }
       return permission.isLegacyFallback() || containsAuth.apply(permission.getApplications());
     } else if (resourceType.equals(ResourceType.PIPELINE)) {
+      if (!isPipelineRbac) {
+        log.info("Pipeline RBAC disabled so not evaluating pipeline level authorisation");
+        return true;
+      }
+      log.info("Pipeline RBAC enabled");
       boolean pipelineHasPermissions =
           permission.getPipelines().stream()
               .anyMatch(a -> a.getName().equalsIgnoreCase(resourceName));
 
       if (!pipelineHasPermissions && permission.isAllowAccessToUnknownPipelines()) {
-        // allow access to any applications w/o explicit permissions
+        // allow access to any pipelines w/o explicit permissions
         return true;
       }
       return permission.isLegacyFallback() || containsAuth.apply(permission.getPipelines());

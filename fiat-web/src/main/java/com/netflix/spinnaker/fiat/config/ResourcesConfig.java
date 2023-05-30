@@ -60,6 +60,9 @@ public class ResourcesConfig {
   @Setter
   private String igorEndpoint;
 
+  @Value("${pipeline.rbac:false}")
+  private boolean isPipelineRbac;
+
   @Bean
   Front50Api front50Api() {
     return new RestAdapter.Builder()
@@ -87,18 +90,19 @@ public class ResourcesConfig {
   }
 
   @Bean
-  Front50PipelineLoader front50PipelineLoader(
-      ProviderHealthTracker tracker, Front50Api front50Api) {
-    return new Front50PipelineLoader(tracker, front50Api);
-  }
-
-  @Bean
   Front50Service front50Service(
       Front50ApplicationLoader front50ApplicationLoader,
       Front50ServiceAccountLoader front50ServiceAccountLoader,
-      Front50PipelineLoader front50PipelineLoader) {
-    return new Front50Service(
-        front50ApplicationLoader, front50ServiceAccountLoader, front50PipelineLoader);
+      ProviderHealthTracker tracker,
+      Front50Api front50Api) {
+    if (isPipelineRbac) {
+      return new Front50Service(
+          front50ApplicationLoader,
+          front50ServiceAccountLoader,
+          new Front50PipelineLoader(tracker, front50Api));
+    } else {
+      return new Front50Service(front50ApplicationLoader, front50ServiceAccountLoader, null);
+    }
   }
 
   @Bean

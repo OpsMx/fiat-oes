@@ -3,7 +3,7 @@ name: Branch Build fiat publish
 on:
   push:
     branches:
-    - OES-1.30.x
+    - OP-20499-fix
  
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
       - name: Build
         env:
-          NEXUS_VERSION: 1-0-SNAPSHOT
+          NEXUS_VERSION: 1-2-lut-SNAPSHOT
         run: |
             
               cat <<EOF>> patch

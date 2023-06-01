@@ -1,4 +1,4 @@
-FROM quay.io/opsmxpublic/ubifips:8.7
+FROM quay.io/opsmxpublic/ubifips:8.8
 MAINTAINER sig-platform@spinnaker.io
 COPY fiat-web/build/install/fiat /opt/fiat
 RUN yum -y install java-17-openjdk-devel wget vim net-tools curl nettle

@@ -409,12 +409,6 @@ public class FiatPermissionEvaluator implements PermissionEvaluator {
       String resourceName,
       ResourceType resourceType,
       Authorization authorization) {
-    log.info(
-        "permissionContains started for: {} and resourceName is: {} and resourceType is: {} and authorization",
-        permission.getName(),
-        resourceName,
-        resourceType,
-        authorization.name());
     if (permission == null) {
       return false;
     }

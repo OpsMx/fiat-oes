@@ -3,11 +3,14 @@ name: Branch Build fiat
 on:
   push:
     branches:
-    - OES-1.30.1
+    - aman
  
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
   CONTAINER_REGISTRY: quay.io/opsmxpublic
+  K8S_DEPLOYMENT_NAME: spin-fiat
+  K8S_SERVICE_NAME: fiat
+  K8S_NAMESPACE: cvetarget
 
 jobs:
   branch-build-push:
@@ -57,4 +60,14 @@ jobs:
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"            
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"
+
+      - name: Deploy to Kubernetes
+        uses: azure/k8s-set-context@v1
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      - name: Edit fiat.yml
+        run: |
+          kubectl -n ${{ env.K8S_NAMESPACE }} exec -it spin-spinnaker-halyard-0 -- bash -c "cd /home/spinnaker/.hal/default/service-settings && sed -i '2d' ${{ env.K8S_SERVICE_NAME }}.yml && sed -i '1s|^|#|' ${{ env.K8S_SERVICE_NAME }}.yml && sed -i '1s|^|artifactId: ${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev\n|' ${{ env.K8S_SERVICE_NAME }}.yml && hal deploy apply"
+          kubectl rollout status deployment/${{ env.K8S_DEPLOYMENT_NAME }} -n ${{ env.K8S_NAMESPACE }}

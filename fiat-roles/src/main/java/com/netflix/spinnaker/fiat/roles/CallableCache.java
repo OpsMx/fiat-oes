@@ -57,7 +57,7 @@ public class CallableCache<Key, Result> {
   }
 
   void clear(Key key) {
-    if(key == null) {
+    if (key == null) {
       return;
     }
     try {

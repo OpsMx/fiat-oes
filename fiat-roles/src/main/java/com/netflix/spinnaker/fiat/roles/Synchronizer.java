@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Status;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import org.springframework.util.backoff.BackOffExecution;
 import org.springframework.util.backoff.FixedBackOff;
 
@@ -123,6 +124,74 @@ public class Synchronizer {
         }
         String message =
             new StringBuilder("User permission sync failed. ")
+                .append("Server status is ")
+                .append(status)
+                .append(". Trying again in ")
+                .append(waitTime)
+                .append(" ms. Cause:")
+                .append(ex.getMessage())
+                .toString();
+        if (log.isDebugEnabled()) {
+          log.debug(message, ex);
+        } else {
+          log.warn(message);
+        }
+
+        try {
+          Thread.sleep(waitTime);
+        } catch (InterruptedException ignored) {
+        }
+      } finally {
+        this.isServerHealthy();
+      }
+    }
+  }
+
+  public long syncOnlyUnrestrictedUserAndReturn() {
+    StopWatch watch = new StopWatch("Synchronizer.syncOnlyUnrestrictedUserAndReturn");
+    watch.start();
+    FixedBackOff backoff = new FixedBackOff();
+    backoff.setInterval(this.retryIntervalMs);
+    backoff.setMaxAttempts(Math.floorDiv(this.syncDelayTimeoutMs, this.retryIntervalMs) + 1);
+    BackOffExecution backOffExec = backoff.start();
+
+    // after this point the execution will get rescheduled
+    final long timeout = System.currentTimeMillis() + this.syncDelayTimeoutMs;
+
+    if (!this.isServerHealthy()) {
+      log.warn(
+          "Server is currently UNHEALTHY. Unrestricted user permission role synchronization and "
+              + "resolution may not complete until this server becomes healthy again.");
+    }
+
+    // Ensure we're going to reload app and service account definitions
+    permissionsResolver.clearCache();
+
+    while (true) {
+      try {
+        Map<String, Set<Role>> combo = new HashMap<>();
+        // force a refresh of the unrestricted user in case the backing repository is empty:
+        combo.put(UnrestrictedResourceConfig.UNRESTRICTED_USERNAME, new HashSet<>());
+        long syncedRoles = this.updateUnrestrictedUserPermissions(combo);
+        watch.stop();
+        log.trace("*** {}, or {}s", watch.shortSummary(), watch.getTotalTimeSeconds());
+        return syncedRoles;
+      } catch (ProviderException | PermissionResolutionException ex) {
+        this.registry
+            .counter(metricName("syncUnrestrictedFailure"), "cause", ex.getClass().getSimpleName())
+            .increment();
+        Status status = this.healthIndicator.health().getStatus();
+        long waitTime = backOffExec.nextBackOff();
+        if (waitTime == BackOffExecution.STOP || System.currentTimeMillis() > timeout) {
+          String cause = (waitTime == BackOffExecution.STOP) ? "backoff-exhausted" : "timeout";
+          registry.counter("syncUnrestrictedUser", "cause", cause).increment();
+          log.error("Unable to resolve unrestricted user permissions.", ex);
+          watch.stop();
+          log.trace("*** {}, or {}s", watch.shortSummary(), watch.getTotalTimeSeconds());
+          return 0;
+        }
+        String message =
+            new StringBuilder("Unrestricted user permission sync failed. ")
                 .append("Server status is ")
                 .append(status)
                 .append(". Trying again in ")
@@ -230,6 +299,22 @@ public class Synchronizer {
             });
     log.info("Synced {} non-anonymous user roles.", count);
     return count;
+  }
+
+  private long updateUnrestrictedUserPermissions(Map<String, Set<Role>> rolesById) {
+    StopWatch watch = new StopWatch("Synchronizer.updateUnrestrictedUserPermissions");
+    watch.start("syncUnrestrictedUserObject");
+    if (rolesById.remove(UnrestrictedResourceConfig.UNRESTRICTED_USERNAME) != null) {
+      timeIt(
+          "syncAnonymous",
+          () -> {
+            permissionsRepository.put(permissionsResolver.resolveUnrestrictedUser());
+            log.trace("Synced anonymous user role.");
+          });
+    }
+    watch.stop();
+    log.trace("*** {} \n total seconds : {}", watch.prettyPrint(), watch.getTotalTimeSeconds());
+    return 1;
   }
 
   private Map<String, Set<Role>> getServiceAccountsAsMap(List<String> roles) {

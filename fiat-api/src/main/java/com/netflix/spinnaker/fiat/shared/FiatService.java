@@ -82,6 +82,14 @@ public interface FiatService {
   long sync(@Body List<String> roles);
 
   /**
+   * Use to update only un restricted user.
+   *
+   * @return The number of anonymous users synced.
+   */
+  @POST("/roles/syncOnlyUnrestrictedUser")
+  long syncOnlyUnrestrictedUser();
+
+  /**
    * Use to update a service account. As opposed to `sync`, this will not trigger a full sync for
    * user role membership.
    *

@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public interface UserRolesSyncStrategy {
   long syncAndReturn(List<String> roles);
 
+  long syncOnlyUnrestrictedUserAndReturn();
+
   long syncServiceAccount(String serviceAccountId, List<String> roles);
 
   @RequiredArgsConstructor
@@ -35,6 +37,11 @@ public interface UserRolesSyncStrategy {
     @Override
     public long syncAndReturn(List<String> roles) {
       return this.synchronizer.syncAndReturn(roles);
+    }
+
+    @Override
+    public long syncOnlyUnrestrictedUserAndReturn() {
+      return this.synchronizer.syncOnlyUnrestrictedUserAndReturn();
     }
 
     @Override
@@ -66,6 +73,22 @@ public interface UserRolesSyncStrategy {
       try {
         return this.callableCache
             .runAndGetResult(nonNullRoles, () -> this.synchronizer.syncAndReturn(nonNullRoles))
+            .get();
+      } catch (Exception e) {
+        log.error(e.getMessage());
+        throw new RolesSynchronizationException();
+      } finally {
+        this.callableCache.clear(nonNullRoles);
+      }
+    }
+
+    @Override
+    public long syncOnlyUnrestrictedUserAndReturn() {
+      final List<String> nonNullRoles = new ArrayList<>();
+      try {
+        return this.callableCache
+            .runAndGetResult(
+                nonNullRoles, () -> this.synchronizer.syncOnlyUnrestrictedUserAndReturn())
             .get();
       } catch (Exception e) {
         log.error(e.getMessage());

@@ -107,6 +107,10 @@ public class UserRolesSyncer {
     return syncStrategy.syncAndReturn(roles);
   }
 
+  public long syncOnlyUnrestrictedUserAndReturn() {
+    return syncStrategy.syncOnlyUnrestrictedUserAndReturn();
+  }
+
   public long syncServiceAccount(String serviceAccountId, List<String> roles) {
     return syncStrategy.syncServiceAccount(serviceAccountId, roles);
   }

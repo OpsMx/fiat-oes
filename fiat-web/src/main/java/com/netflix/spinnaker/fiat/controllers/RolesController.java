@@ -32,6 +32,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,6 +112,23 @@ public class RolesController {
           HttpServletResponse.SC_SERVICE_UNAVAILABLE,
           "Error occurred syncing permissions. See Fiat Logs.");
     }
+    return count;
+  }
+
+  @RequestMapping(value = "/syncOnlyUnrestrictedUser", method = RequestMethod.POST)
+  public long syncOnlyUnrestrictedUser(HttpServletResponse response) throws IOException {
+    StopWatch watch = new StopWatch("RolesController.syncOnlyUnrestrictedUser");
+    watch.start();
+    log.trace("Role syncOnlyUnrestrictedUser invoked by web request for roles:");
+    long count = syncer.syncOnlyUnrestrictedUserAndReturn();
+    if (count == 0) {
+      log.info("No users found with specified roles");
+      response.sendError(
+          HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+          "Error occurred syncing permissions. See Fiat Logs.");
+    }
+    watch.stop();
+    log.trace("*** {} or {}s", watch.shortSummary(), watch.getTotalTimeSeconds());
     return count;
   }
 

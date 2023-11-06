@@ -72,3 +72,7 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"            
+      - id: get-build-name
+        run: |
+            imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+            echo "fiat=$imageName" >> $GITHUB_OUTPUT

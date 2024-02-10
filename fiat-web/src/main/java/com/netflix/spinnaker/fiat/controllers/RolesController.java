@@ -70,19 +70,22 @@ public class RolesController {
   @RequestMapping(value = "/{userId:.+}", method = RequestMethod.PUT)
   public void putUserPermission(
       @PathVariable String userId, @RequestBody @NonNull List<String> externalRoles) {
+    log.info("put user permission for userId : {} , externalRoles : {}", userId, externalRoles);
     List<Role> convertedRoles =
         externalRoles.stream()
             .map(extRole -> new Role().setSource(Role.Source.EXTERNAL).setName(extRole))
             .collect(Collectors.toList());
+    log.info("converted roles : {}", convertedRoles);
 
     ExternalUser extUser =
         new ExternalUser()
             .setId(ControllerSupport.convert(userId))
             .setExternalRoles(convertedRoles);
+    log.info("external user : {}", extUser);
 
     try {
       UserPermission userPermission = permissionsResolver.resolveAndMerge(extUser);
-      log.debug(
+      log.info(
           "Updated user permissions (userId: {}, roles: {}, suppliedExternalRoles: {})",
           userId,
           userPermission.getRoles().stream().map(Role::getName).collect(Collectors.toList()),
@@ -90,7 +93,10 @@ public class RolesController {
 
       permissionsRepository.put(userPermission);
     } catch (PermissionResolutionException pre) {
+      log.error("exception : ", pre);
       throw new UserPermissionModificationException(pre);
+    } catch (Exception e){
+      log.error("Exception occurred while persisting : ", e);
     }
   }
 

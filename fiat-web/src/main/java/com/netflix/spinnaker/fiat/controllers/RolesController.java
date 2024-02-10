@@ -70,7 +70,7 @@ public class RolesController {
   @RequestMapping(value = "/{userId:.+}", method = RequestMethod.PUT)
   public void putUserPermission(
       @PathVariable String userId, @RequestBody @NonNull List<String> externalRoles) {
-    log.info("put user permission for userId : {} , externalRoles : {}", userId, externalRoles);
+      log.info("put user permission for userId : {}, size of the externalRoles : {} , externalRoles : {}", userId, externalRoles.size(), externalRoles);
     List<Role> convertedRoles =
         externalRoles.stream()
             .map(extRole -> new Role().setSource(Role.Source.EXTERNAL).setName(extRole))

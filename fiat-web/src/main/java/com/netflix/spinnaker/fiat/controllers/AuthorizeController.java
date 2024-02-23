@@ -30,7 +30,7 @@ import com.netflix.spinnaker.fiat.providers.ResourcePermissionProvider;
 import com.netflix.spinnaker.kork.web.exceptions.InvalidRequestException;
 import com.netflix.spinnaker.kork.web.exceptions.NotFoundException;
 import com.netflix.spinnaker.security.AuthenticatedRequest;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -77,8 +77,8 @@ public class AuthorizeController {
     this.getUserPermissionCounterId = registry.createId("fiat.getUserPermission");
   }
 
-  @ApiOperation(
-      value =
+  @Operation(
+      summary =
           "Used mostly for testing. Not really any real value to the rest of "
               + "the system. Disabled by default.")
   @RequestMapping(value = "/", method = RequestMethod.GET)

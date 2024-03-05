@@ -52,7 +52,7 @@ RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHO
 
 RUN chmod -R 777 /opt/fiat/plugins/
 RUN chown -R spinnaker:spinnaker /opt/
-RUN yum -y remove  tar 
+RUN yum -y remove tar vim vi
 RUN yum -y remove clean all && rm -rf /var/cache
 
 USER spinnaker

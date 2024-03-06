@@ -7,7 +7,6 @@ configurations.all {
   exclude group: "org.slf4j", module: "slf4j-log4j12"
 }
 
-
 dependencies {
   implementation "com.squareup.retrofit:retrofit"
   implementation "com.squareup.retrofit:converter-jackson:1.9.0"

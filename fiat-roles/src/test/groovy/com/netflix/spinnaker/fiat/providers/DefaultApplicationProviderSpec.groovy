@@ -231,22 +231,22 @@ class DefaultApplicationProviderSpec extends Specification {
     setup:
     def testApps = [
             new Application().setName("front50App1")
-                    .setDetails(HashMap.of("foo", "bar", "xyz", "pqr"))
+                    .setDetails([foo: "bar", xyz: "pqr"])
                     .setPermissions(new Permissions.Builder().add(Authorization.READ, "role").build()),
             new Application().setName("front50App2")
-                    .setDetails(HashMap.of("foo", "bar", "xyz", "pqr"))
+                    .setDetails([foo: "bar", xyz: "pqr"])
                     .setPermissions(new Permissions.Builder().add(Authorization.READ, "role").build())
     ]
 
     Set<Application> expectedApps = [
             new Application().setName("front50App1")
-                    .setDetails(HashMap.of("foo", "bar", "xyz", "pqr"))
+                    .setDetails([foo: "bar", xyz: "pqr"])
                     .setPermissions(new Permissions.Builder()
                             .add(Authorization.READ, "role")
                             .add(Authorization.EXECUTE, "role")
                             .build()),
             new Application().setName("front50App2")
-                    .setDetails(HashMap.of("foo", "bar", "xyz", "pqr"))
+                    .setDetails([foo: "bar", xyz: "pqr"])
                     .setPermissions(new Permissions.Builder()
                             .add(Authorization.READ, "role")
                             .add(Authorization.EXECUTE, "role")
@@ -287,4 +287,5 @@ class DefaultApplicationProviderSpec extends Specification {
     true            | ["foo", "xyz"] as Set | [foo: "bar", xyz: "pqr"]
     true            | ["foo"] as Set        | [foo: "bar"]
   }
+
 }

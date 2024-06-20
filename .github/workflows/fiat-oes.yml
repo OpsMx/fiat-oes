@@ -31,7 +31,7 @@ jobs:
           echo ::set-output name=REPO::ubi8-fiat-cve
           #echo ::set-output name=VERSION::"1.33.x$(date --utc +'%Y%m%d')"
           #echo ::set-output name=VERSION::"1.33.x$(date --utc +'%-m%d')"
-          echo ::set-output name=VERSION::"1.33.x"
+          echo ::set-output name=VERSION::"1.33.2"
           echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
           echo "::set-output name=BUILDDATE::$(date -u +"%Y%m%d%H%M")"
       - name: Login to Quay
@@ -60,7 +60,7 @@ jobs:
           build-args: |
             CUSTOMPLUGIN_RELEASEORG=opsmx
             CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
-            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
+            CUSTOMPLUGIN_RELEASE_VERSION=1.0.1
           context: .
           file: docker/ubi8/Dockerfile-fips
           push: true
@@ -73,7 +73,7 @@ jobs:
           build-args: |
             CUSTOMPLUGIN_RELEASEORG=opsmx
             CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
-            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
+            CUSTOMPLUGIN_RELEASE_VERSION=1.0.1
           context: .
           file: docker/ubi8/Dockerfile-dev
           push: true

@@ -21,7 +21,7 @@ ENV JAVA_HOME=/opsmx-java-runtime \
     PATH=${PATH}:/opsmx-java-runtime/bin \
     WORK_DIR=/opsmx/workdir \
     CONF_DIR=/opsmx/conf
-
+ ENV SERVICE_PLUGIN_PATH=/opt/fiat/plugins
 # Enabling fips mode
 RUN fips-mode-setup --enable
 
@@ -36,24 +36,20 @@ COPY jaeger/opentelemetry-javaagent.jar /opt/jaeger/opentelemetry-javaagent.jar
 RUN yum -y install  wget 
 #RUN yum -y update
 RUN adduser spinnaker
-RUN mkdir -p /opt/fiat/plugins
+RUN mkdir -p ${SERVICE_PLUGIN_PATH}
 
 #custom plugin zip files adding
 ARG CUSTOMPLUGIN_RELEASEORG
 ENV CUSTOMPLUGIN_RELEASEORG=$CUSTOMPLUGIN_RELEASEORG
-
 ARG CUSTOMPLUGIN_RELEASEREPO
 ENV CUSTOMPLUGIN_RELEASEREPO=$CUSTOMPLUGIN_RELEASEREPO
+ARG CUSTOMPLUGIN_RELEASE_VERSION
+ENV CUSTOMPLUGIN_RELEASE_VERSION=$CUSTOMPLUGIN_RELEASE_VERSION
 
-ARG CUSTOMPLUGIN_RELEASEVERSION
-ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
+RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASE_VERSION}.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/v${CUSTOMPLUGIN_RELEASE_VERSION}/armory-observability-plugin-v${CUSTOMPLUGIN_RELEASE_VERSION}.zip -P ${SERVICE_PLUGIN_PATH}
+RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASE_VERSION}.zip  ${SERVICE_PLUGIN_PATH}
 
-RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/${CUSTOMPLUGIN_RELEASEVERSION}/armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}.zip -P /opt/fiat/plugins 
-
-RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/fiat/plugins/
-
-
-RUN chmod -R 777 /opt/fiat/plugins/
+RUN chmod -R 777 ${SERVICE_PLUGIN_PATH}
 RUN chown -R spinnaker:spinnaker /opt/
 RUN yum -y remove  tar 
 RUN yum -y remove clean all && rm -rf /var/cache

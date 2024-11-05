@@ -69,14 +69,12 @@ jobs:
              
           for i in $(cat ds.txt) 
           do
-           sed  s/NEXUSARTIID/$i/g patch > patchnew
-           cat patchnew >> $i/$i.gradle
-          
+            sed  s/NEXUSARTIID/$i/g patch > patchnew
+            cat patchnew >> $i/$i.gradle
           done
-          echo "file above"     
-          sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
-          
-          
+              
+          #sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
+                    
           sed  -e 's/NEXUS_URL/${{ secrets.NEXUS_URL }}/'  -i settings.gradle
           sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
           sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle

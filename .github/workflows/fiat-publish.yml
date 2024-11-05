@@ -59,7 +59,7 @@ jobs:
             }
            }  
                   tasks.withType(GenerateModuleMetadata).configureEach {
-                              ppressedValidationErrors.add('enforced-platform')
+                             suppressedValidationErrors.add('enforced-platform')
                     }
           EOF
           

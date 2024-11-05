@@ -73,7 +73,7 @@ jobs:
             cat patchnew >> $i/$i.gradle
           done
               
-          #sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
+          sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
                     
           sed  -e 's/NEXUS_URL/${{ secrets.NEXUS_URL }}/'  -i settings.gradle
           sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
@@ -83,5 +83,4 @@ jobs:
           sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
           sed  -e 's/NEXUS_URL/${{ secrets.NEXUS_URL }}/' -i build.gradle
           
-          
-            ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

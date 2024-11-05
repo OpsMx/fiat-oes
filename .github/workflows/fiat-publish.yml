@@ -66,14 +66,14 @@ jobs:
           ls -d */  | grep "fiat" | sed 's/\///g' > ds.txt
           
           cat ds.txt
-          cat "file above"        
+             
           for i in $(cat ds.txt) 
           do
            sed  s/NEXUSARTIID/$i/g patch > patchnew
            cat patchnew >> $i/$i.gradle
           
           done
-          
+          echo "file above"     
           sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
           
           

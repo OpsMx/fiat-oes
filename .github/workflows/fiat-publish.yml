@@ -38,11 +38,11 @@ jobs:
                    maven(MavenPublication){
                         groupId = 'io.spinnaker.fiat'
                         artifactId = 'NEXUSARTIID'
-                        version = "$NEXUS_VERSION"
+                        version = '$NEXUS_VERSION'
                         from components.java
              pom {
                name = 'NEXUSARTIID'
-               description = 'A description of my library'
+               description = 'A description of nexus library'
                }
              }
           }
@@ -60,15 +60,13 @@ jobs:
            }  
                   tasks.withType(GenerateModuleMetadata).configureEach {
                               ppressedValidationErrors.add('enforced-platform')
-                        }
-          
+                    }
           EOF
           
           ls -d */  | grep "fiat" | sed 's/\///g' > ds.txt
           
           cat ds.txt
-          
-          
+          cat "file above"        
           for i in $(cat ds.txt) 
           do
            sed  s/NEXUSARTIID/$i/g patch > patchnew
